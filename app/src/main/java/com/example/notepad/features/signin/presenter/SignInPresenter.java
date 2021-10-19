@@ -1,4 +1,4 @@
-package com.example.notepad.features.signin.controller;
+package com.example.notepad.features.signin.presenter;
 
 import androidx.annotation.NonNull;
 
@@ -10,13 +10,13 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 
-public class SignInController {
+public class SignInPresenter {
     private SignInModel model;
     private SignInView view;
 
-    public SignInController(SignInView view, SignInModel model) {
+    public SignInPresenter(SignInView view) {
         this.view = view;
-        this.model = model;
+        this.model = new SignInModel();
     }
 
     public void onSignInCLick(String email, String password) {

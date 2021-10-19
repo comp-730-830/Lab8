@@ -5,8 +5,7 @@ import android.os.Bundle;
 import androidx.appcompat.app.AlertDialog;
 
 import com.example.notepad.R;
-import com.example.notepad.features.signin.controller.SignInController;
-import com.example.notepad.features.signin.model.SignInModel;
+import com.example.notepad.features.signin.presenter.SignInPresenter;
 import com.example.notepad.navigation.NavigationActivity;
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.textfield.TextInputEditText;
@@ -17,16 +16,14 @@ public class SignInActivity extends NavigationActivity implements SignInView {
     private TextInputEditText passwordText;
     private MaterialButton signInButton;
 
-    private SignInModel model;
-    private SignInController controller;
+    private SignInPresenter presenter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_sign_in);
 
-        model = new SignInModel();
-        controller = new SignInController(this, model);
+        presenter = new SignInPresenter(this);
 
         signInButton = findViewById(R.id.signInButton);
         passwordText = findViewById(R.id.passwordText);
@@ -45,7 +42,7 @@ public class SignInActivity extends NavigationActivity implements SignInView {
         if (email.isEmpty() || pass.isEmpty())
             return;
 
-        controller.onSignInCLick(email, pass);
+        presenter.onSignInCLick(email, pass);
     }
 
     @Override
@@ -61,12 +58,12 @@ public class SignInActivity extends NavigationActivity implements SignInView {
     @Override
     protected void onResume() {
         super.onResume();
-        controller.onResume();
+        presenter.onResume();
     }
 
     @Override
     protected void onDestroy() {
-        controller = null;
+        presenter = null;
         super.onDestroy();
     }
 }

@@ -1,16 +1,19 @@
-package com.example.notepad.features.edit.controller;
+package com.example.notepad.features.edit.presenter;
 
 import com.example.notepad.App;
+import com.example.notepad.data.Note;
 import com.example.notepad.features.edit.model.EditNoteModel;
 import com.example.notepad.features.edit.view.EditNoteView;
 
-public class EditNoteController {
+public class EditNotePresenter {
     private EditNoteModel model;
     private EditNoteView view;
 
-    public EditNoteController(EditNoteView view, EditNoteModel model) {
+    public EditNotePresenter(EditNoteView view, Note note) {
         this.view = view;
-        this.model = model;
+        this.model = new EditNoteModel(note);
+
+        view.showNoteContent(model.getContent());
     }
 
     public void onTextChanged(String text) {
