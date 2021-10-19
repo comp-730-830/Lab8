@@ -18,15 +18,15 @@ public class Navigator {
     }
 
     public void back() {
-        // TODO add Back command
+        executeCommands(new Command[]{new Back()});
     }
 
     public void replace(Screen screen) {
-        // TODO implement replace function using Forward and Back commands
+        executeCommands(new Command[]{new Forward(screen), new Back()});
     }
 
     private void executeCommands(Command[] commands) {
-        if(activity == null)
+        if (activity == null)
             return;
         for (Command command : commands) {
             command.execute(activity);

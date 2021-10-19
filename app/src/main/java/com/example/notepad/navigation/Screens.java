@@ -8,7 +8,9 @@ import com.example.notepad.list.NotesListActivity;
 import com.example.notepad.signin.SignInActivity;
 
 public class Screens {
-    // TODO add notes list screen
+    public static Screen notesList = new Screen(NotesListActivity.class);
+
+    public static Screen singIn = new Screen(SignInActivity.class);
 
     public static Screen editNote(Note note) {
         Bundle extras = new Bundle();

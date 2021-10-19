@@ -1,6 +1,5 @@
 package com.example.notepad.signin;
 
-import android.content.Intent;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -9,7 +8,6 @@ import androidx.appcompat.app.AlertDialog;
 import com.example.notepad.App;
 import com.example.notepad.R;
 import com.example.notepad.data.Database;
-import com.example.notepad.list.NotesListActivity;
 import com.example.notepad.navigation.NavigationActivity;
 import com.example.notepad.navigation.Screens;
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -77,9 +75,6 @@ public class SignInActivity extends NavigationActivity {
     }
 
     private void showNotesList() {
-        // TODO replace with Navigator.replaceScreen()
-        Intent intents = new Intent(this, NotesListActivity.class);
-        startActivity(intents);
-        finish();
+        App.getAppNavigator().replace(Screens.notesList);
     }
 }
