@@ -7,54 +7,75 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.notepad.R;
 import com.example.notepad.data.Note;
-import com.example.notepad.features.list.presenter.NotesPresenter;
+import com.example.notepad.features.list.viewmodel.NotesViewModel;
+import com.example.notepad.features.list.viewmodel.state.DeleteConfirmationState;
+import com.example.notepad.features.list.viewmodel.state.ErrorState;
+import com.example.notepad.features.list.viewmodel.state.NotesListState;
 import com.example.notepad.navigation.NavigationActivity;
+import com.example.notepad.observable.Observer;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import java.util.List;
 
-public class NotesListActivity extends NavigationActivity implements NotesView {
+public class NotesListActivity extends NavigationActivity {
 
     private RecyclerView listView;
     private FloatingActionButton createButton;
     private NotesAdapter adapter;
 
-    private NotesPresenter presenter;
+    private NotesViewModel viewModel;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_notes_list);
+
+        viewModel = new NotesViewModel();
+
         initListView();
         initCreateButton();
-
-        presenter = new NotesPresenter(this);
+        observeData();
     }
 
     private void initListView() {
         listView = findViewById(R.id.listView);
         adapter = new NotesAdapter();
-        adapter.setDeleteListener(presenter);
-        adapter.setEditListener(presenter);
+        adapter.setDeleteListener(viewModel);
+        adapter.setEditListener(viewModel);
         listView.setAdapter(adapter);
     }
 
     private void initCreateButton() {
         createButton = findViewById(R.id.createButton);
-        createButton.setOnClickListener(v -> presenter.onCreateClick());
+        createButton.setOnClickListener(v -> viewModel.onCreateClick());
     }
 
-    @Override
-    public void showNotes(List<Note> notes) {
-        adapter.submitList(notes);
+    private void observeData() {
+        viewModel.notes.registerObserver(new Observer<List<Note>>() {
+            @Override
+            public void notify(List<Note> data) {
+                {
+                    adapter.submitList(data);
+                }
+            }
+        });
+        viewModel.state.registerObserver(new Observer<NotesListState>() {
+            @Override
+            public void notify(NotesListState data) {
+                if (data instanceof DeleteConfirmationState) {
+                    showDeleteConfirmation(((DeleteConfirmationState) data).getNote());
+                } else if (data instanceof ErrorState) {
+                    ((ErrorState) data).getError().printStackTrace();
+                }
+            }
+        });
     }
 
-    @Override
     public void showDeleteConfirmation(Note note) {
         new AlertDialog.Builder(this)
             .setTitle("Delete Note")
             .setMessage("Are you sure you want to delete the note? This can't be undone.")
-            .setPositiveButton("Delete", (dialog, which) -> presenter.onConfirmDeleteClick(note))
+            .setPositiveButton("Delete", (dialog, which) -> viewModel.onConfirmDeleteClick(note))
             .setNegativeButton("Cancel", (dialog, which) -> dialog.dismiss())
             .setCancelable(true)
             .show();
@@ -62,8 +83,7 @@ public class NotesListActivity extends NavigationActivity implements NotesView {
 
     @Override
     protected void onDestroy() {
-        presenter.onDestroy();
-        presenter = null;
+        viewModel.onDestroy();
         super.onDestroy();
     }
 }

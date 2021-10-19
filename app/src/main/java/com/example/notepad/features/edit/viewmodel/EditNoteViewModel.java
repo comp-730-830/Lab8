@@ -1,19 +1,19 @@
-package com.example.notepad.features.edit.presenter;
+package com.example.notepad.features.edit.viewmodel;
 
 import com.example.notepad.App;
 import com.example.notepad.data.Note;
 import com.example.notepad.features.edit.model.EditNoteModel;
-import com.example.notepad.features.edit.view.EditNoteView;
+import com.example.notepad.observable.Observable;
 
-public class EditNotePresenter {
+public class EditNoteViewModel {
     private EditNoteModel model;
-    private EditNoteView view;
 
-    public EditNotePresenter(EditNoteView view, Note note) {
-        this.view = view;
+    public Observable<String> content = new Observable();
+    public Observable<EditNoteState> state = new Observable(EditNoteState.NORMAL);
+
+    public EditNoteViewModel(Note note) {
         this.model = new EditNoteModel(note);
-
-        view.showNoteContent(model.getContent());
+        content.newValue(model.getContent());
     }
 
     public void onTextChanged(String text) {
@@ -29,10 +29,15 @@ public class EditNotePresenter {
     }
 
     public void onBackClick() {
-        view.showConfirmDiscard();
+        state.newValue(EditNoteState.DISCARD_CONFIRMATION);
     }
 
     public void onDiscardClick() {
         App.getAppNavigator().back();
+    }
+
+    public void onDestroy() {
+        content.unregisterAll();
+        state.unregisterAll();
     }
 }

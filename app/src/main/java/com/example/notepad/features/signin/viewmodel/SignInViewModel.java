@@ -1,21 +1,21 @@
-package com.example.notepad.features.signin.presenter;
+package com.example.notepad.features.signin.viewmodel;
 
 import androidx.annotation.NonNull;
 
 import com.example.notepad.App;
 import com.example.notepad.features.signin.model.SignInModel;
-import com.example.notepad.features.signin.view.SignInView;
 import com.example.notepad.navigation.Screens;
+import com.example.notepad.observable.Observable;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 
-public class SignInPresenter {
+public class SignInViewModel {
     private SignInModel model;
-    private SignInView view;
 
-    public SignInPresenter(SignInView view) {
-        this.view = view;
+    public Observable<SignInState> state = new Observable<>(SignInState.NORMAL);
+
+    public SignInViewModel() {
         this.model = new SignInModel();
     }
 
@@ -27,7 +27,7 @@ public class SignInPresenter {
                     if (task.isSuccessful()) {
                         showNotesList();
                     } else {
-                        view.showSignInError();
+                        state.newValue(SignInState.ERROR);
                     }
                 }
             });
@@ -41,5 +41,9 @@ public class SignInPresenter {
 
     private void showNotesList() {
         App.getAppNavigator().replace(Screens.notesList);
+    }
+
+    public void onDestroy() {
+        state.unregisterAll();
     }
 }

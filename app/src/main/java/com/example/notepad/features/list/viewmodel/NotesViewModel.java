@@ -1,4 +1,4 @@
-package com.example.notepad.features.list.presenter;
+package com.example.notepad.features.list.viewmodel;
 
 import androidx.annotation.Nullable;
 
@@ -6,23 +6,29 @@ import com.example.notepad.App;
 import com.example.notepad.data.Note;
 import com.example.notepad.features.list.model.NotesModel;
 import com.example.notepad.features.list.view.NotesAdapter;
-import com.example.notepad.features.list.view.NotesView;
+import com.example.notepad.features.list.viewmodel.state.DeleteConfirmationState;
+import com.example.notepad.features.list.viewmodel.state.ErrorState;
+import com.example.notepad.features.list.viewmodel.state.NormalState;
+import com.example.notepad.features.list.viewmodel.state.NotesListState;
 import com.example.notepad.navigation.Screens;
+import com.example.notepad.observable.Observable;
 import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.firestore.ListenerRegistration;
 import com.google.firebase.firestore.QuerySnapshot;
 
+import java.util.ArrayList;
 import java.util.List;
 
-public class NotesPresenter implements NotesAdapter.OnDeleteListener, NotesAdapter.OnEditListener {
+public class NotesViewModel implements NotesAdapter.OnDeleteListener, NotesAdapter.OnEditListener {
     private NotesModel model;
-    private NotesView view;
+
+    public Observable<List<Note>> notes = new Observable<>();
+    public Observable<NotesListState> state = new Observable<>(new NormalState());
 
     private ListenerRegistration registration = null;
 
-    public NotesPresenter(NotesView view) {
-        this.view = view;
+    public NotesViewModel() {
         this.model = new NotesModel();
 
         observeData();
@@ -33,12 +39,13 @@ public class NotesPresenter implements NotesAdapter.OnDeleteListener, NotesAdapt
             @Override
             public void onEvent(@Nullable QuerySnapshot value, @Nullable FirebaseFirestoreException error) {
                 if (error != null) {
-                    error.printStackTrace();
+                    notes.newValue(new ArrayList<>());
+                    state.newValue(new ErrorState(error));
                     return;
                 }
                 if (value != null) {
-                    List<Note> notes = value.toObjects(Note.class);
-                    view.showNotes(notes);
+                    List<Note> notesList = value.toObjects(Note.class);
+                    notes.newValue(notesList);
                 }
             }
         });
@@ -55,7 +62,7 @@ public class NotesPresenter implements NotesAdapter.OnDeleteListener, NotesAdapt
 
     @Override
     public void onDeleteClick(Note note) {
-        view.showDeleteConfirmation(note);
+        state.newValue(new DeleteConfirmationState(note));
     }
 
     public void onConfirmDeleteClick(Note note) {
@@ -65,5 +72,7 @@ public class NotesPresenter implements NotesAdapter.OnDeleteListener, NotesAdapt
     public void onDestroy() {
         // Unsubscribe to prevent memory leaks
         registration.remove();
+        state.unregisterAll();
+        notes.unregisterAll();
     }
 }

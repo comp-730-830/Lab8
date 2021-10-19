@@ -5,31 +5,35 @@ import android.os.Bundle;
 import androidx.appcompat.app.AlertDialog;
 
 import com.example.notepad.R;
-import com.example.notepad.features.signin.presenter.SignInPresenter;
+import com.example.notepad.features.signin.viewmodel.SignInState;
+import com.example.notepad.features.signin.viewmodel.SignInViewModel;
 import com.example.notepad.navigation.NavigationActivity;
+import com.example.notepad.observable.Observer;
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.textfield.TextInputEditText;
 
-public class SignInActivity extends NavigationActivity implements SignInView {
+public class SignInActivity extends NavigationActivity implements Observer<SignInState> {
 
     private TextInputEditText emailText;
     private TextInputEditText passwordText;
     private MaterialButton signInButton;
 
-    private SignInPresenter presenter;
+    private SignInViewModel viewModel;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_sign_in);
 
-        presenter = new SignInPresenter(this);
+        viewModel = new SignInViewModel();
 
         signInButton = findViewById(R.id.signInButton);
         passwordText = findViewById(R.id.passwordText);
         emailText = findViewById(R.id.emailText);
 
         signInButton.setOnClickListener(v -> onSignInCLick());
+
+        viewModel.state.registerObserver(this);
     }
 
     private void onSignInCLick() {
@@ -42,10 +46,16 @@ public class SignInActivity extends NavigationActivity implements SignInView {
         if (email.isEmpty() || pass.isEmpty())
             return;
 
-        presenter.onSignInCLick(email, pass);
+        viewModel.onSignInCLick(email, pass);
     }
 
     @Override
+    public void notify(SignInState data) {
+        if (data == SignInState.ERROR) {
+            showSignInError();
+        }
+    }
+
     public void showSignInError() {
         new AlertDialog.Builder(this)
             .setTitle("Error")
@@ -58,12 +68,12 @@ public class SignInActivity extends NavigationActivity implements SignInView {
     @Override
     protected void onResume() {
         super.onResume();
-        presenter.onResume();
+        viewModel.onResume();
     }
 
     @Override
     protected void onDestroy() {
-        presenter = null;
+        viewModel.onDestroy();
         super.onDestroy();
     }
 }
