@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "291550346979",
+    "firebase_url": "https://software-development-comp730-default-rtdb.firebaseio.com",
+    "project_id": "software-development-comp730",
+    "storage_bucket": "software-development-comp730.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:291550346979:android:7429ff178011b60b1f0fd6",
+        "android_client_info": {
+          "package_name": "com.example.notepad"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "291550346979-241mtd0qtahno25avf71s72eqmpffpuk.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBiE4wNWjnmR19tjkcmjS41d4q9wqGXPO0"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "291550346979-241mtd0qtahno25avf71s72eqmpffpuk.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
