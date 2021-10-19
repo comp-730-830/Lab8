@@ -1,45 +1,38 @@
-package com.example.notepad.signin;
+package com.example.notepad.features.signin.view;
 
 import android.os.Bundle;
 
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 
-import com.example.notepad.App;
 import com.example.notepad.R;
-import com.example.notepad.data.Database;
+import com.example.notepad.features.signin.controller.SignInController;
+import com.example.notepad.features.signin.model.SignInModel;
 import com.example.notepad.navigation.NavigationActivity;
-import com.example.notepad.navigation.Screens;
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.textfield.TextInputEditText;
-import com.google.firebase.auth.AuthResult;
 
-public class SignInActivity extends NavigationActivity {
+public class SignInActivity extends NavigationActivity implements SignInView {
 
     private TextInputEditText emailText;
     private TextInputEditText passwordText;
     private MaterialButton signInButton;
+
+    private SignInModel model;
+    private SignInController controller;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_sign_in);
 
+        model = new SignInModel();
+        controller = new SignInController(this, model);
+
         signInButton = findViewById(R.id.signInButton);
         passwordText = findViewById(R.id.passwordText);
         emailText = findViewById(R.id.emailText);
 
         signInButton.setOnClickListener(v -> onSignInCLick());
-    }
-
-    @Override
-    protected void onResume() {
-        super.onResume();
-        if (Database.getInstance().isUserSignedIn()) {
-            showNotesList();
-        }
     }
 
     private void onSignInCLick() {
@@ -52,20 +45,11 @@ public class SignInActivity extends NavigationActivity {
         if (email.isEmpty() || pass.isEmpty())
             return;
 
-        Database.getInstance().signIn(email, pass)
-            .addOnCompleteListener(new OnCompleteListener<AuthResult>() {
-                @Override
-                public void onComplete(@NonNull Task<AuthResult> task) {
-                    if (task.isSuccessful()) {
-                        showNotesList();
-                    } else {
-                        showSignInError();
-                    }
-                }
-            });
+        controller.onSignInCLick(email, pass);
     }
 
-    private void showSignInError() {
+    @Override
+    public void showSignInError() {
         new AlertDialog.Builder(this)
             .setTitle("Error")
             .setMessage("Please try again")
@@ -74,7 +58,15 @@ public class SignInActivity extends NavigationActivity {
             .show();
     }
 
-    private void showNotesList() {
-        App.getAppNavigator().replace(Screens.notesList);
+    @Override
+    protected void onResume() {
+        super.onResume();
+        controller.onResume();
+    }
+
+    @Override
+    protected void onDestroy() {
+        controller = null;
+        super.onDestroy();
     }
 }

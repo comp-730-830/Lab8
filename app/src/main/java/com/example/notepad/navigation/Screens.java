@@ -3,9 +3,9 @@ package com.example.notepad.navigation;
 import android.os.Bundle;
 
 import com.example.notepad.data.Note;
-import com.example.notepad.edit.EditNoteActivity;
-import com.example.notepad.list.NotesListActivity;
-import com.example.notepad.signin.SignInActivity;
+import com.example.notepad.features.edit.view.EditNoteActivity;
+import com.example.notepad.features.list.view.NotesListActivity;
+import com.example.notepad.features.signin.view.SignInActivity;
 
 public class Screens {
     public static Screen notesList = new Screen(NotesListActivity.class);

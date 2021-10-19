@@ -11,7 +11,7 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.Notes">
         <activity
-            android:name=".signin.SignInActivity"
+            android:name=".features.signin.view.SignInActivity"
             android:exported="true">
 
             <intent-filter>
@@ -21,12 +21,12 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".list.NotesListActivity"
+            android:name=".features.list.view.NotesListActivity"
             android:exported="true" />
         <activity
-            android:name=".edit.EditNoteActivity"
+            android:name=".features.edit.view.EditNoteActivity"
             android:exported="true"
-            android:parentActivityName=".list.NotesListActivity" />
+            android:parentActivityName=".features.list.view.NotesListActivity" />
     </application>
 
 </manifest>

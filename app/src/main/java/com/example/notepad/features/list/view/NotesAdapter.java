@@ -1,4 +1,4 @@
-package com.example.notepad.list;
+package com.example.notepad.features.list.view;
 
 import android.view.LayoutInflater;
 import android.view.View;
@@ -92,11 +92,11 @@ public class NotesAdapter extends ListAdapter<Note, NotesAdapter.ViewHolder> {
         }
     }
 
-    interface OnEditListener {
+    public interface OnEditListener {
         void onEditClick(Note note);
     }
 
-    interface OnDeleteListener {
+    public interface OnDeleteListener {
         void onDeleteClick(Note note);
     }
 }
