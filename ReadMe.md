@@ -9,4 +9,4 @@ COMP 730/830 Lab 8
 
 ## Instructions
 1. Discuss ways to achieve separation of concerns in applications.
-2. Discuss how MVC, MCP, and MVVM architectural patterns could be applied in this app.
+2. Discuss how MVC, MVP, and MVVM architectural patterns could be applied in this app.
